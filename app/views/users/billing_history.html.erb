@@ -1,0 +1,87 @@
+<div id="main">
+  <div id="page_container">
+    <div id="page_information">
+      <%= breadcrumb(["My Account",  profile_user_path(current_user)], "Billing History") %>
+      <div class="arial18_green" id="main_title">My Profile : Billing Activity</div>
+    </div>
+  </div>
+
+  <% if flash[:notice] %>
+    <div style="clear: both"></div>
+    <div class="notice">
+      <%= flash[:notice] %>
+    </div>
+  <% end %>
+
+  <div id="main_content">
+    <div id="container_4col" style="float:left;">
+      <div id="profile_billing_activity">
+
+        <div class="details type">
+          <p class="title">Membership Type</p>
+          <p class="value"><%= membership_type %></p>
+        </div>
+
+        <% unless current_user.has_free_subscription? || current_user.has_premium_free_subscription? %>
+          <div class="details period">
+            <p class="title">Current membership period</p>
+            <p class="value"><%= current_membership_period %></p>
+          </div>
+
+          <% unless current_user.account.subscription.is_cancelled? %>
+            <div class="details date">
+              <p class="title">Next payment date</p>
+              <p class="value">
+                <%= current_user.account.subscription.next_renewal_at.strftime '%b %e, %Y' %>
+              </p>
+            </div>
+
+            <div class="details">
+              <p class="title">Amount</p>
+              <p class="value">
+                <%= current_membership_amount %>
+              </p>
+            </div>
+          <% else %>
+            <h3 class="notification" style="clear:both">You have cancelled your membership (expires on <%= current_user.account.subscription.next_renewal_at.to_s(:long_day) %>)</h3>
+            <br />
+          <% end %>
+        <% end %>
+
+        <h2>Recent Billing Activity <!-- <a href="#">Show All</a> --></h2>
+
+        <% unless current_user.account.subscription.subscription_payments.empty? %>
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Activity</th>
+                <th>Method</th>
+                <th>Membership Period</th>
+                <th class="last">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% current_user.account.subscription.subscription_payments.find(:all, :order => 'created_at desc').each do |sp| %>
+              <tr>
+                <td><%= sp.created_at.strftime '%b %e, %Y' %></td>
+                <td>Membership Payment</td>
+                <td><%= sp.payment_method %></td>
+                <td><%= billing_period(sp) %></td>
+                <td class="last"><%= sp.payment_method == SubscriptionPayment::REWARD_POINTS_PAYMENT_METHOD ? 'Free' : number_to_currency(sp.amount) %></td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <p class="not_available">No account information available.</p>
+        <% end %>
+
+      </div>
+    </div>
+
+    <div id="container_2col" style="float:right">
+      <%= render :partial => 'profile_sidebar' %>
+    </div>
+  </div>
+</div>

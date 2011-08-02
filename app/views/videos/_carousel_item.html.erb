@@ -1,0 +1,16 @@
+<% video = carousel_item.video %>
+<li>
+  <div class="slider_item_box"
+    onmouseover="this.style.cursor='Pointer';"
+    onclick="toggle_homepage_promo(); sliderSelect(this); featured_video_details($(this).parent().attr('jcarouselindex'));"
+    large_thumbnail="<%= carousel_item.image.url(:carousel) %>"
+    free='<%= carousel_item.free? %>'>
+    <% if carousel_item.free? %>
+    <div id="featured_thumb_banner">
+      <%= image_tag 'featured-thumb-free.png', :size => '106x16' %>
+    </div>
+    <% end %>
+
+    <%= image_tag(carousel_item.image.url(:thumb)) %>
+  </div>
+</li>

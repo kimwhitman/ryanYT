@@ -1,0 +1,69 @@
+<div class="details"><h1><%= video.title %></h1>
+  <div style="margin-bottom: 15px;">
+    <div class='video_overall_rating' style='display:inline'>
+      <%= render_star_rating(video.score, :name => 'header_rating') %>  
+    </div>
+    <a class="verdana10_gray" href="#RIGHT_HERE_RIGHT_NOW" onclick="discussionChange('review_display_button','review_display');$.scrollTo('#review_display', 800);"><span class='review_count'><%= video.reviews.public.count %></span> reviews</a>
+  </div>
+
+  <% unless video.instructors.blank? %>
+    <% if video.instructors.first.photo? %>
+      <div id="instructor_photo">
+        <%= image_tag video.instructors.first.photo.url, :style=> 'max-width:84px;max-height:121px;' %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <div class="details" style="margin:0 0 0 89px;">
+    <p><strong>Skill Level:</strong> <%= video.skill_name %></p>
+    <p><strong>Style:</strong> <%= video.style_names.join(', ')  %></p>
+    <p><strong>Focus:</strong> <%= video.focus_name  %></p>
+    <p><strong>Length:</strong> <%= video.duration_to_minutes %>:<%= video.duration_seconds %></p>
+    <p><strong>Instructor:</strong> <%= video.instructor_names.join(', ')  %></p>
+  </div>
+  <div style="clear:both;"></div>
+
+</div>
+
+<div id="x_detail_menu">
+  <ul>
+    <li><a id="x_description" href="#">Description</a></li>
+    <li><a id="x_search_tags" href="#">Search Tags</a></li>
+  </ul>
+</div>
+
+<div id="detail_menu_description" class="details" style="height:110px; padding-top:10px;">
+  <p><%= video.description %></p>
+</div>
+
+<div id="detail_menu_tags" class="details" style="height:110px; padding-top:10px; display: none;">
+  <p>
+    <% video.tags.split(', ').each do |tag| %>
+      <%= link_to tag, search_videos_path(:keywords => tag) %>
+    <% end %>
+  </p>
+</div>
+
+<script type="text/javascript">
+  jQuery(function($){
+    $('#x_detail_menu').click(function(event){
+      var menuItemIds = ['detail_menu_description', 'detail_menu_tags'];
+
+      var $target = $(event.target);
+      var $idName = $target.attr('id').replace('x_', '').replace('search_', '');
+
+      if ($target.is('a')) {
+        $(menuItemIds).each(function(item){
+          if (menuItemIds[item].indexOf($idName) > 0) {
+            $('#' + menuItemIds[item]).show();
+          }
+          else {
+            $('#' + menuItemIds[item]).hide();
+          }
+        });
+      }
+
+      event.preventDefault();
+    });
+  });
+</script>

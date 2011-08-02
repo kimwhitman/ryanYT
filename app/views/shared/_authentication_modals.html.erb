@@ -1,0 +1,58 @@
+<div class="jqmWindow" id="login_modal">
+  <a href="#" class="jqmClose"><%= image_tag('xCloseButton.gif') %></a>
+
+  <div class="container">
+    <%= image_tag 'member_login.gif', :class => 'logo' %>
+
+    <p>New? <%= link_to("Sign up!", sign_up_path) %></p>
+
+    <% form_for :session, :url => session_path, :html => { :id => 'ajax_login' } do |f| -%>
+
+    <br/>
+
+    <div class='messages'></div>
+
+      <%= render :partial => 'sessions/form', :locals => {:f => f} %>
+
+      <hr size="3" noshade />
+      <%= f.submit 'Login', :class => 'button_confirm' %>
+      <%= link_to('Help, I forgot my password', '#', :id => 'forgot_h') %>
+      <hr size="1" noshade />
+
+      <% end -%>
+
+  </div>
+</div>
+
+<div class="jqmWindow" id="forgot_password_modal">
+  <a href="#" class="jqmClose"><%= image_tag('xCloseButton.gif') %></a>
+
+  <div class="container">
+
+    <%= image_tag 'retrieve_password.gif', :class => 'logo' %>
+
+    <p>New? <%= link_to("Sign up!", sign_up_path) %></p>
+
+    <% form_for :session, :url => forgot_password_path, :html => { :id => 'ajax_forgot' }do |f| -%>
+
+      <br/>
+      <div class='messages'></div>
+
+      <p>Forgot your password? That's okay, it happens to the best of us.
+        Submit your registered e-mail address and we'll send you simple
+        instructions for getting Logged in.</p>
+
+      <p>
+        <%= text_field_tag :email %>
+        <%= label_tag :email, 'Email'%>
+      </p>
+
+      <hr size="3" noshade />
+        <%= f.submit 'Submit', :class => 'button_confirm'%>
+        <%= link_to('Need more help? Email help@yogatoday.com', 'mailto: help@yogatoday.com') %>
+      <hr size="1" noshade />
+
+    <% end -%>
+
+  </div>
+</div>

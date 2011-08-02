@@ -1,0 +1,27 @@
+<% title 'Reset password' %>
+
+<div id="main">
+
+  <div id="page_container">
+    <div id="page_information">
+      <%= breadcrumb("Reset Password") %>
+
+      <div class="arial18_green" id="main_title">Reset password</div>
+    </div>
+  </div>
+
+  <div id="main_content">
+    <p>
+      <p>
+        Your password has been successfully reset. Please log in now at the top of this page.
+      </p>
+    </p>
+  </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function() {
+  $('#header_information').hide();
+  $('#header_login_form').show();
+});
+</script>

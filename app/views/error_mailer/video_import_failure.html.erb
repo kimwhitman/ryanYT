@@ -1,0 +1,9 @@
+There was a problem importing the following videos from Brightcove to the YogaToday CMS.
+
+<% @videos.each do |video| %>
+  Video Title: <%= video.title %>
+  Errors:
+  <% video.errors.each do |attribute, message| -%>
+    <%= attribute -%>: <%= message -%>
+  <% end %>
+<% end %>

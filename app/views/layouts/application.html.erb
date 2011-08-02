@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title><%= yield(:title) || 'Yoga Today' %></title>
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="title" content="Yoga Today" />
+    <meta name="description" content="<%= yield(:meta_description) || 'Discover a new way to do yoga. Search, stream, and download from our library of over 200 one-hour video classes –in settings that harmonize with the postures and at the level and intensity that’s best for you.' -%>" />
+    <link rel="image_src" href="<%= yield(:meta_image_src) || 'http://yogatoday.com/images/yogatoday-logo.gif' -%>" />
+
+    <% if Rails.env == 'development' %>
+      <%= javascript_include_merged :dev %>
+    <% else %>
+      <%= javascript_include_tag "#{request.ssl? ? 'https://' : 'http://'}ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js" %>
+      <%= javascript_include_tag "#{request.ssl? ? 'https://' : 'http://'}ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js" %>
+    <% end %>
+
+    <%= javascript_include_merged :base %>
+
+    <%= stylesheet_link_merged :base %>
+    <%= yield :head %>
+  </head>
+  <body>
+    <div id="container">
+      <!-- Updating site message: -->
+      <!-- <div style="background-color: #fff5d9; position: relative; z-index:1; padding: 20px; font-weight: bold;">
+        Please be patient while we are upgrading our video player.We will be back in the flow very shortly. Thanks. Namast&eacute;.
+      </div> -->
+
+      <div id="header">
+        <div id="yoga_logo">
+          <a title="Yoga Today - Practice for Life" href="<%= root_url  %> ">
+            <%= image_tag 'yogatoday-logo-tag-1.gif', :size => '285x70', :border => '0' %>
+          </a>
+        </div>
+
+        <div id="menu">
+          <%= render :partial => 'shared/menu' %>
+        </div>
+        <div id="login_display">
+          <%= render :partial => 'shared/header_link_nav' %>
+        </div>
+      </div>
+
+      <%# commenting partial out until I incorporate it into the template better %>
+      <%#= render :partial => 'shared/flashes' %>
+
+      <%= yield %>
+
+    </div>
+    <div id="footer">
+      <div id="content">
+
+        <div class="footer_box">
+          <span class="verdana10_bold_gray">Help</span><br>
+          <span class="verdana10_gray">
+            <%= link_to 'Yoga Questions', faqs_path %>
+            <br>
+            <%= link_to 'Technical Questions', faqs_path(:type => 'technical') %>
+            <br>
+            <%= link_to 'Billing Questions', faqs_path(:type => 'billing') %>
+          </span>
+        </div>
+
+        <div class="grid_spacer" style="float: left;">&nbsp;</div>
+
+        <div class="footer_box">
+          <span class="verdana10_bold_gray">Yoga Today Users</span><br>
+          <span class="verdana10_gray">
+            <%= link_to "Promotions & Events", promotions_and_events_path %><br>
+            <%= link_to 'Tell Us Your Story', user_stories_path %><br>
+            <%= link_to "Contact Us", contact_path %><br>
+            <%= link_to 'News', press_and_news_path %></span><br>
+        </div>
+
+        <div class="grid_spacer" style="float: left;">&nbsp;</div>
+
+        <div class="footer_box">
+          <span class="verdana10_bold_gray">For The Press</span><br>
+          <span class="verdana10_gray">
+            <%= link_to 'Media Downloads', media_downloads_path %><br/>
+            <%= link_to "Contact Us", contact_path %><br>
+            <%= link_to 'News', press_and_news_path %></span><br>
+        </div>
+
+        <div class="grid_spacer" style="float: left;">&nbsp;</div>
+
+        <div class="footer_box">
+          <span class="verdana10_bold_gray">For Sponsors</span><br>
+          <span class="verdana10_gray">
+          <%= link_to 'Advertise with Yoga Today', advertising_path %></span>
+        </div>
+
+        <div class="grid_spacer" style="float: left;">&nbsp;</div>
+
+        <div class="footer_box">
+          <span class="verdana10_bold_gray">© <%= DateTime.now.year  %>  Yoga Today</span><br>
+          <span class="verdana10_gray">
+            <%= link_to 'Terms & Conditions', terms_and_conditions_path %><br>
+            <%= link_to 'Privacy Policy', privacy_policy_path %></span>
+        </div>
+
+        <div style="float: right; text-align: right;">
+          <a href="http://www.yogatoday.com/" title="Yoga Today - Yoga videos delivered daily">
+            <%= image_tag 'yogatoday-logo-large.gif', :border => '0' %>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <%
+      images = ['thumbnail_default.png',
+                'thumbnail_hover.png',
+                'button-bg-lg.png',
+                'button-bg-lg-2.png',
+                'button-bg-lg-3.png',
+                'button-smaller.png',
+                'blog_button.png',
+                'blog_button_on.png']
+
+      preload = []
+
+      images.each { |str| preload << "'#{image_path(str)}'" }
+    %>
+
+    <script type='text/javascript'>
+    jQuery(document).ready(function() {
+        var imgUrls = [<%= preload * ',' %>];
+        for(i = 0; i < imgUrls.length; i++) {
+          var img = new Image();
+          img.src = imgUrls[i];
+        }
+      });
+
+      a2a_config = {
+        linkname: document.title,
+        linkurl: location.href
+      };
+    </script>
+    <script type="text/javascript" src="<%= request.ssl? ? 'https://' : 'http://' %>static.addtoany.com/menu/page.js"></script>
+    <script type="text/javascript">
+      var a2a_config = a2a_config || {};
+      a2a_config.hide_embeds = 0;
+    </script>
+
+    <%= yield :javascript_content %>
+
+    <% if !request.ssl? %>
+      <script type="text/javascript" src="http://partner.googleadservices.com/gampad/google_service.js"></script>
+      <script type="text/javascript">
+        if(typeof GS_googleAddAdSenseService != 'undefined') {
+            GS_googleAddAdSenseService("ca-pub-4324137112614859");
+        }
+        if(typeof GS_googleEnableAllServices != 'undefined') {
+            GS_googleEnableAllServices();
+        }
+        if(typeof GA_googleAddSlot != 'undefined') {
+            GA_googleAddSlot("ca-pub-4324137112614859",
+            "YogaToday_SearchResults_Bottom_300x250");
+            GA_googleAddSlot("ca-pub-4324137112614859",
+            "YogaToday_VideoDetails_Bottom_300x250");
+        }
+        if(typeof GA_googleFetchAds != 'undefined') {
+            GA_googleFetchAds();
+        }
+      </script>
+    <% end %>
+
+    <% if Rails.env == 'production' %>
+      <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+      </script>
+      <script type="text/javascript">
+      try{
+      var pageTracker = _gat._getTracker("UA-6704453-2");
+      pageTracker._trackPageview();
+      } catch(err) {}
+      </script>
+    <% end %>
+  </body>
+</html>

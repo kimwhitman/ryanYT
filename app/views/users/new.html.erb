@@ -1,0 +1,45 @@
+<% title 'Sign Up' -%>
+
+<div id="main">
+  <div id="page_container">
+
+    <%= render :partial => 'shared/flashes' %>
+
+    <div id="signup_section">
+      <h1 class="header_primary signup_banner">Sign Up</h1>
+
+      <h2 class="header_secondary">Sign Up <%= link_to 'Already a member?', login_path %></h2>
+
+      <% form_for @user do |f| -%>
+        <%= render :partial => "form", :locals => { :f => f } %>
+      <% end -%>
+
+    </div>
+
+    <%= render :partial => "sessions/login" %>
+
+  </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function() {
+
+    validateRegistration("#new_user");
+
+    $("#user_name ~ label").css('display', 'none');
+    $("#user_password ~ label").css('display', 'none');
+    $("#user_password_confirmation ~ label").css('display', 'none');
+    $("#user_email ~ label").css('display', 'none');
+    $("#user_email_confirmation ~ label").css('display', 'none');
+
+    $("#user_name").defaultValue('Screen name');
+    $("#user_email").defaultValue('E-mail address');
+    $("#user_email_confirmation").defaultValue('Retype E-mail address');
+    $("#user_password").defaultValue('Password');
+    $("#user_password_confirmation").defaultValue('Retype Password');
+  });
+
+  function selectAmbassador() {
+    window.location = "/users/select_ambassador?ambassador_name=" + jQuery("#x_ambassador_name").val()
+  }
+</script>

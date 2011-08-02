@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title>Thank You</title>
+  </head>
+  <body>
+    <%= render :partial => "shared/email_header" %>
+
+    Hello <%= @user_story.name.split(' ').first %>,
+    <br />
+    <br />
+    <p>Thank you for sharing your kind words on Yoga Today's "tell us your story" page. We published your story today and wanted to give you the heads up to look for it.</p>
+
+    <p>It was so nice of you to take the time to get in touch. We are glad to that yoga is having a positive influence on your life as well as the lives of so many all over the world. Our hope is that collectively, we all grow our practices together and spread the good energy to as many people as we possibly can!</p>
+
+    <p>We are honored to have you in our audience and sincerely thank you for the complements.</p>
+
+    <p>Namaste,</p>
+
+    <p>Kim, Neesha, Adi, Sarah and the whole crew</p>
+
+    <p>View your story here:
+    <%= link_to 'Thank you for helping me connect with my inner me', user_story_url(@user_story) %></p>
+  </body>
+</html>

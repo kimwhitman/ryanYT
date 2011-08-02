@@ -1,0 +1,206 @@
+<div id="main">
+  <div id="page_container">
+    <div id="page_information">
+      <%= breadcrumb("My Account") %>
+      <div class="arial18_green" id="main_title">Payment Info</div>
+    </div>
+  </div>
+
+  <% form_for @user, :url => billing_user_path(@user), :html => {:id => 'billing_form'} do |f| %>
+
+  <div id="main_content">
+    <% if @user.has_paying_subscription? %>
+      <%
+        subscription = @user.account.subscription
+        plan = subscription.subscription_plan
+      %>
+
+      <% if subscription.amount > 0 && !current_user.account.subscription.is_cancelled? %>
+        <h3>You are currently using card <%= subscription.card_number %> (expires on <%= subscription.card_expiration %>).</h3>
+        <h3>Your next bill will be on <%= subscription.next_renewal_at.to_date.to_s(:long) %>  for <%= subscription.subscription_plan.transitions_to_subscription_plan_id.blank? ? number_to_currency(subscription.amount) : number_to_currency(subscription.subscription_plan.transitions_to_subscription_plan.amount) %></h3>
+      <% end %>
+
+      <% if plan.name == 'Premium' && plan.renewal_period == 12 %>
+        <% if current_user.account.subscription.is_cancelled? %>
+          <h3>You have cancelled your Yoga Today 365 membership (expires on <%= current_user.account.subscription.next_renewal_at.to_s(:long_day) %>)</h3>
+        <% else %>
+          <h3>You are signed up for the Yoga Today 365. Billing will occur annually</h3>
+        <% end %>
+      <% elsif plan.name == 'Premium' && plan.renewal_period == 1 %>
+        <% if current_user.account.subscription.is_cancelled? %>
+          <h3>You have cancelled your Premium membership (expires on <%= current_user.account.subscription.next_renewal_at.to_s(:long_day) %>)</h3>
+        <% else %>
+          <h3>You are signed up for monthly billing</h3>
+        <% end %>
+      <% elsif plan.name == 'Spring Signup Special' %>
+        <% if current_user.account.subscription.is_cancelled? %>
+          <h3>You have cancelled your Spring Special membership (expires on <%= current_user.account.subscription.next_renewal_at.to_s(:long_day) %>)</h3>
+        <% else %>
+          <h3>You are signed up for the Spring Special. After the four month period has ended you will be billed monthly.</h3>
+        <% end %>
+      <% else %>
+        <h3>You are signed up for a free account</h3>
+      <% end %>
+
+      <p><strong><em>For security purposes, your personal information is not shown here.</em></strong></p>
+    <% end %>
+
+    <%= render :partial => 'shared/flashes' %>
+
+    <br />
+
+    <%= f.error_messages(:class => 'notice',
+        :header_message => nil,
+        :message => "I'm sorry, we were unable to save your billing information.") %>
+
+    <div id="container_4col" style="float:left;">
+      <div id="profile_payment_info">
+        <% if current_user.has_used_ambassador_plans == false && (@ambassador_user || @change_ambassador) %>
+
+          <div class="ambassador_off">
+            <p class="title">Free Membership</p>
+            <label class="radio end_set"><%= radio_button_tag 'membership', 'free', @billing_cycle == 'free' %> Free. Enjoy Yoga Today's free weekly classes.</label>
+
+            <p class="title">Monthly Unlimited Membership</p>
+            <label class="radio end_set"><%= radio_button_tag 'membership', '1', @billing_cycle == '1' %> $9.99/month, recurring billing.</label>
+          </div>
+
+          <div class="ambassador_on">
+            <fieldset>
+              <legend><span>Prepaid Unlimited Membership with 2 week free trial</span></legend>
+              <label><%= radio_button_tag 'membership', 'Premium Trial', @billing_cycle == 'Premium Trial' %> Yoga Today 365 <span>A Full year for just $89.95 - saves you 25%</span></label>
+              <% if @billing_cycle == 'Spring Signup Special Trial' || @billing_cycle == 'Spring Signup Special' %>
+                <label><%= radio_button_tag 'membership', 'Spring Signup Special Trial', @billing_cycle == 'Spring Signup Special Trial' %> Spring Signup Special <span>Four months for $34.95 - saves you 13%</span></label>
+              <% end %>
+            </fieldset>
+            <div class="panel">
+              <% if @ambassador_user && params[:change_ambassador].blank? %>
+                <div class="assigned">
+                  <h5>Your Ambassador</h5>
+                  <div class="ambassador_agent_id">
+                    <span><%= @ambassador_user.ambassador_name %></span>
+                  </div>
+                  <%= hidden_field_tag :ambassador_user_id, @ambassador_user.id %>
+                  <label><%= remote_check_box_tag('notify_ambassador', notify_ambassador_users_path, notifying_ambassador) %> Notify this Ambassador by e-mail when I subscribe.</label>
+                  <%= link_to 'Not your ambassador?', change_ambassador_users_path(:return_to => 'billing'), :class => 'change_ambassador', :method => :post %>
+                </div>
+              <% else %>
+                <div class="unassigned">
+                  <p>To credit an Ambassador and begin your 2 week free trial, please enter a valid Ambassador ID:</p>
+                  <%= text_field_tag :ambassador_name, '', :id => 'x_ambassador_name', :class => 'input' %>
+                  <%= link_to_function image_tag('ambassador_button_enter.png'), 'selectAmbassador()', :class => 'submit' %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+
+        <% if current_user.has_used_ambassador_plans || (@ambassador_user.nil? && @change_ambassador.nil?) %>
+          <div class="ambassador_off">
+            <p class="title">Free Membership</p>
+            <label class="radio end_set"><%= radio_button_tag 'membership', 'free', @billing_cycle == 'free' %> Free. Enjoy Yoga Today's free weekly classes.</label>
+            <p class="title">Monthly Unlimited Membership</p>
+            <label class="radio end_set"><%= radio_button_tag 'membership', '1', @billing_cycle == '1' %> $9.99/month, recurring billing.</label>
+            <p class="title">Prepaid Unlimited Membership</p>
+            <label class="radio"><%= radio_button_tag 'membership', '12', @billing_cycle == '12' %> Yoga Today 365: A full year for just $89.95 - saves you 25%</label>
+            <label class="radio end_set">
+              <% if @billing_cycle == 'Spring Signup Special Trial' || @billing_cycle == 'Spring Signup Special' %>
+                <%= radio_button_tag 'membership', 'Spring Signup Special', @billing_cycle == 'Spring Signup Special' %> Spring Signup Special: Four months for $34.95 - saves you 13%
+              <% end %>
+            </label>
+
+            <% if current_user.ambassador.nil? %>
+              <div class="trial">
+                <h3>2 Week Free Trial</h3>
+                <p>Enter a valid Ambassador ID with your prepaid subscription and enjoy a 2 week free trial before your account is billed. Cancel any time.</p>
+                <%= text_field_tag :ambassador_name, '', :id => 'x_ambassador_name', :class => 'input' %>
+                <%= link_to_function image_tag('ambassador_button_enter.png'), 'selectAmbassador()', :class => 'submit' %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+
+        <div id="credit_card">
+          <fieldset>
+            <% fields_for :creditcard do |cc| %>
+            <label>
+              select card type
+              <%
+              card_types = [['American Express', 'american_express'],
+                    ['Discover', 'discover'],
+                    ['Mastercard', 'master'],
+                    ['Visa', 'visa']]
+
+                if Rails.env != 'production'
+                  card_types << ['Bogus', 'bogus']
+                end %>
+
+              <%= cc.select :type, card_types, :selected => 'bogus' if Rails.env != 'production' %>
+              <%= cc.select :type, card_types if Rails.env == 'production' %>
+
+              <%= image_tag 'credit_cards.png', :size => '111x27' %>
+            </label>
+            <label>
+              card number
+              <%= cc.text_field :number, :size => 25, :onKeyDown => "limitText(this, 25);" %>
+            </label>
+            <label class="security_code">
+              CVV, CVV2
+              <%= cc.text_field :verification_value, :size => 4, :onKeyDown => "limitText(this, 4);" %>
+            </label>
+            <label class="expiration_month">
+              expiration date
+              <%= select_month(@date, :add_month_numbers => true, :prefix => 'creditcard',  :field_name => 'month') %>
+            </label>
+            <label class="expiration_year">
+              &nbsp;
+              <%= select_year(@date.year, :start_year => Date.today.year, :end_year => 10.years.from_now.year, :prefix => 'creditcard',  :field_name => 'year') %>
+            </label>
+            <label>
+              first name
+              <%= cc.text_field :first_name, :onKeyDown => "limitText(this, 100);" %>
+            </label>
+            <label>
+              last name
+              <%= cc.text_field :last_name, :onKeyDown => "limitText(this, 100);" %>
+            </label>
+            <% end %>
+            <% unless @user.has_paying_subscription? %>
+            <label class="checkbox">
+              <%= f.check_box :agree_to_terms %>
+              I agree to the Membership Terms and Details.
+            </label>
+            <% end %>
+          </fieldset>
+        </div>
+        <div class="actions">
+          <input class="submit" type="image" src="/images/profile_button_subscribe.png"></input>
+        </div>
+
+      </div>
+    <% end %>
+
+  </div>
+  <div id="container_2col" style="float:right">
+    <%= render :partial => 'profile_sidebar' %>
+  </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function(){
+      $("#membership_free").click(function(){
+       $('#credit_card').hide();
+      });
+      $("#membership_1").click(function(){
+       $('#credit_card').show();
+      });
+      $("#membership_12").click(function(){
+       $('#credit_card').show();
+      });
+  });
+
+  function selectAmbassador() {
+    window.location = "/users/select_ambassador?ambassador_name=" + jQuery("#x_ambassador_name").val() + "&return_to=billing"
+  }
+</script>

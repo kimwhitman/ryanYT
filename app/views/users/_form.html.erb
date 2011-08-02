@@ -1,0 +1,119 @@
+<%= error_messages_for :user, :id => "warning",
+      :header_message => "There were problems with your registration."
+%>
+
+<% if @ambassador_user || @change_ambassador %>
+
+  <div class="ambassador_off">
+    <p class="title">Free Membership</p>
+    <label class="radio end_set"><%= radio_button_tag 'membership', 'free', @billing_cycle == 'free' %> Free. Enjoy Yoga Today's free weekly classes.</label>
+
+    <p class="title">Monthly Unlimited Membership</p>
+    <label class="radio end_set"><%= radio_button_tag 'membership', '1', @billing_cycle == '1' %> $9.99/month, recurring billing.</label>
+  </div>
+
+  <div class="ambassador_on">
+    <fieldset>
+      <legend><span>Prepaid Unlimited Membership with 2 week free trial</span></legend>
+      <label><%= radio_button_tag 'membership', 'Premium Trial', @billing_cycle == 'Premium Trial' %> Yoga Today 365 <span>A Full year for just $89.95 - saves you 25%</span></label>
+    </fieldset>
+
+    <div class="panel">
+      <% if @ambassador_user %>
+        <div class="assigned">
+          <h5>Your Ambassador</h5>
+          <div class="ambassador_agent_id">
+            <span><%= @ambassador_user.ambassador_name %></span>
+          </div>
+          <%= hidden_field_tag :ambassador_user_id, @ambassador_user.id %>
+          <label><%= remote_check_box_tag('notify_ambassador', notify_ambassador_users_path, notifying_ambassador) %> Notify this Ambassador by e-mail when I subscribe.</label>
+          <%= link_to 'Not your ambassador?', change_ambassador_users_path, :class => 'change_ambassador', :method => :post %>
+        </div>
+      <% else %>
+        <div class="unassigned">
+          <p>To credit an Ambassador and begin your 2 week free trial, please enter a valid Ambassador ID:</p>
+          <% form_tag select_ambassador_users_path do %>
+            <%= text_field_tag :ambassador_name, '', :id => 'x_ambassador_name', :class => 'input' %>
+            <%= link_to_function image_tag('ambassador_button_enter.png'), 'selectAmbassador()', :class => 'submit' %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<% if @ambassador_user.nil? && @change_ambassador.nil? %>
+  <div class="ambassador_off">
+    <p class="title">Free Membership</p>
+    <label class="radio end_set"><%= radio_button_tag 'membership', 'free', @billing_cycle == 'free' %> Free. Enjoy Yoga Today's free weekly classes.</label>
+
+    <p class="title">Monthly Unlimited Membership</p>
+    <label class="radio end_set"><%= radio_button_tag 'membership', '1', @billing_cycle == '1' %> $9.99/month, recurring billing.</label>
+
+    <p class="title">Prepaid Unlimited Membership</p>
+    <label class="radio"><%= radio_button_tag 'membership', '12', @billing_cycle == '12' %> Yoga Today 365: A full year for just $89.95 - saves you 25%</label>
+
+
+    <div class="trial">
+      <h3>2 Week Free Trial</h3>
+      <p>Enter a valid Ambassador ID with your prepaid subscription and enjoy a 2 week free trial before your account is billed. Cancel any time.</p>
+      <%= text_field_tag :ambassador_name, '', :id => 'x_ambassador_name', :class => 'input', :value => @ambassador_user ? @ambassador_user.ambassador_name : '' %>
+      <%= link_to_function image_tag('ambassador_button_enter.png'), 'selectAmbassador()', :class => 'submit' %>
+
+    </div>
+  </div>
+<% end %>
+
+<fieldset class="basic">
+
+  <label class="end_set wide">
+    screen name
+    <%= f.text_field :name  %>
+  </label>
+
+  <label class="column">
+    e-mail address
+    <%= f.text_field :email  %>
+  </label>
+
+  <label>
+    confirm e-mail address
+    <%= f.text_field :email_confirmation%>
+  </label>
+
+  <label class="column">
+    password
+    <%= f.password_field :password %>
+  </label>
+
+  <label class="end_set">
+    confirm password
+    <%= f.password_field :password_confirmation %>
+  </label>
+
+  <label class="checkbox">
+    <%= f.check_box :wants_newsletter %>
+    Send me the weekly Yoga Today newsletter and weekly class update.
+  </label>
+
+  <label class="checkbox">
+    <%= f.check_box :wants_promos %>
+    Keep me informed of Yoga Today offers and special announcements.
+  </label>
+
+  <label class="radio">
+    <%= f.radio_button :newsletter_format, 'html' %>
+    HTML E-mail
+  </label>
+
+  <label class="radio">
+    <%= f.radio_button :newsletter_format, 'plain' %>
+    Plain Text E-mail
+  </label>
+
+</fieldset>
+
+  <div class="actions">
+    <input class="submit" type="image" src="/images/profile_button_signup.png"></input>
+  </div>
+

@@ -1,0 +1,47 @@
+<%= will_paginate @users %>
+
+<table class="active-scaffold">
+  <thead>
+    <tr>
+      <th><%= link_to 'Name', admin_users_path(:order => 'name', :desc => 'false') %></th>
+      <th><%= link_to 'Email', admin_users_path(:order => 'email', :desc => 'false') %></th>
+      <th><%= link_to 'Subscription', admin_users_path(:order => 'subscription_plans.name', :desc => 'false') %></th>
+      <th><%= link_to 'Next Bill Date', admin_users_path(:order => 'subscriptions.next_renewal_at', :desc => 'true') %></th>
+      <th><%= link_to 'Amb.<br />ID', admin_users_path(:order => 'ambassador_name', :desc => 'false') %></th>
+      <th><%= link_to 'Amb. Points<br />Current/Earned/Used', admin_users_path(:order => 'points_earned') %></th>
+      <th><%= link_to 'Signup Date', admin_users_path(:order => 'created_at') %></th>
+      <th><%= link_to 'Cancel Date', admin_users_path(:order => 'subscriptions.cancelled_at') %></th>
+      <th></th>
+    </tr>
+  </thead>
+  <% @users.each do |user| %>
+    <% subscription = user.account.subscription %>
+    <tr class="record">
+      <td><%= user.name %></td>
+      <td><%= user.email %></td>
+      <td><%= subscription.subscription_plan.name %></td>
+      <td>
+        <%= '<strong>' if subscription.next_renewal_at < Time.zone.now %>
+        <%= subscription.next_renewal_at.strftime('%b %e %Y') if subscription.subscription_plan.amount > 0 || subscription.subscription_plan.is_trial? %>
+        <%= '</strong>' if subscription.next_renewal_at < Time.zone.now %>
+      </td>
+      <td><%= user.ambassador_name %></td>
+      <td>
+        <% unless user.ambassador_name.blank? %>
+          <%= user.points_current %>/<%= user.points_earned %>/<%= user.points_used %>
+        <% else %>
+          &nbsp;
+        <% end %>
+      </td>
+      <td><%= user.created_at.strftime('%b %e %Y %H:%M') %></td>
+      <td><%= user.account.subscription.cancelled_at.strftime('%b %e %Y %H:%M') unless user.account.subscription.cancelled_at.blank? %></td>
+      <td>
+        <%= link_to 'View', admin_user_path(user) %> |
+        <%= link_to 'Edit', edit_admin_user_path(user) %> |
+        <%= link_to 'Delete', admin_user_path(user), :method => :delete, :confirm => "Are you sure you want to delete #{ user.name }'s account?" %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
+<%= will_paginate @users %>

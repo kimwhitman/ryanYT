@@ -1,0 +1,41 @@
+---
+javascripts:
+- base:
+  - jrails
+  - application
+  - yoga
+  - image_swap
+  - jqModal/jqModal
+  - jquery.form
+  - jquery.defaultvalue
+  - jquery.jcarousel
+  - jquery.validate
+  - billing
+  - home
+  - login
+  - shopping_cart
+  - story
+  - registration
+  - yoga/registration
+  - jquery.metadata
+  - jquery.rating
+  - jquery.scrollTo
+  - jquery.timeago
+  - search
+  - jquery.colorbox-min
+- dev:
+  - jquery
+  - jquery-ui
+
+stylesheets:
+- base:
+  - yoga_main
+  - yoga_type
+  - main
+  - jqModal/jqModal
+  - jquery.jcarousel
+  - yoga_carousel_skin
+  - ambassador
+  - colorbox
+- admin:
+  - admin

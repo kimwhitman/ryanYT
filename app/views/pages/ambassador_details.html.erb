@@ -1,0 +1,117 @@
+<% title 'Ambassador Program' %>
+<div id="main">
+  <div id="main_content">
+    <div id="ambassador_details">
+      <div class="header">
+        <img src="/images/ambassador_details_header.png" alt="Join the Yoga Today Ambassador Program" />
+      </div>
+      <div class="hero"><%= link_to image_tag("/images/ambassador_details_button_join-now.png"), sign_up_path, :class => 'join_now' %></div>
+      <ul>
+        <li>
+          <span class="token">1</span>
+          <h3>To join, create your Ambassador ID</h3>
+          <p>This is how you'll be identified and credited when you refer a new Yoga Today subscriber. Take a moment to pick an ID that feels good - something that will be fun to share and easy to remember. This will be your permanent Ambassador ID.</p>
+          <dl>
+            <dt>Examples</dt>
+            <dd>goodtimesyoga <span>Now that sounds inviting</span></dd>
+            <dd>niahBrown <span>Nice to meet you.</span></dd>
+            <dd>xbnr1799dan <span class="red">Different, but not very friendly.</dd>
+          </dl>
+
+          <% if current_user %>
+            <% if current_user.ambassador_name.blank? && params[:verify_ambassador_name].blank? %>
+              <div class="preview create">
+                <p>To join, create an Ambassador ID</p>
+                  <% form_for current_user, :url => select_ambassador_name_user_path(current_user) do |f| -%>
+                    <fieldset>
+                      <label>
+                        <%= f.text_field :ambassador_name, :class => 'input' %>
+                        <%= hidden_field_tag :redirect_to, 'ambassador-details' %>
+                      </label>
+                      <input class="submit" type="image" src="/images/ambassador_details_button_join.png"></input>
+                    </fieldset>
+                  <% end %>
+              </div>
+            <% end %>
+
+            <% if current_user.ambassador_name.blank? && params[:verify_ambassador_name] %>
+              <div class="preview confirm">
+                <h4>Confirm Ambassador ID</h4>
+                <p>This will be your permanent ID that is shared with others when you invite them to the Yoga Today community.</p>
+                <div class="ambassador_agent_id"><span><%= params[:verify_ambassador_name] %></span></div>
+                <% form_for current_user do |f| -%>
+                  <fieldset>
+                    <legend><span><%= link_to 'make a change', '/ambassador-details' %></span></legend>
+                    <%= f.hidden_field :ambassador_name, :value => params[:verify_ambassador_name] %>
+                    <label><input type="image" class="submit" src="/images/profile_widget_button_confirm.png"></input></label>
+                  </fieldset>
+                <% end %>
+              </div>
+            <% end %>
+
+            <% if current_user.ambassador_name || params[:verify_ambassador_name] %>
+              <div class="preview invite">
+                <h4>Your Ambassador ID</h4>
+                <p>Invite others to the Yoga Today community.</p>
+                <div class="ambassador_agent_id"><span><%= params[:verify_ambassador_name] || current_user.ambassador_name %></span></div>
+                <% form_tag ambassador_tools_widget_invite_by_email_user_path(current_user) do %>
+                  <fieldset class="invitation">
+                    <legend><span>E-mail an invitation to:</span></legend>
+                    <label><%= text_field_tag :recipients %></label>
+                    <input class="submit" type="image" src="/images/profile_widget_button_continue.png"></input>
+                  </fieldset>
+                <% end %>
+              </div>
+            <% end %>
+
+          <% else %>
+            <div class="preview login">
+              <h4>Login</h4>
+              <% form_for :session, :url => session_path do |f| -%>
+                <fieldset>
+                  <label>e-mail address
+                    <%= f.text_field :email %>
+                  </label>
+                  <label>password
+                    <%= f.password_field :password %>
+                  </label>
+                </fieldset>
+                <%= image_submit_tag "/images/ambassador_details_button_login.png", :class => "submit" %>
+              <% end %>
+
+              <span class="signup">Not a member yet? <%= link_to 'Sign Up', sign_up_path %></span>
+            </div>
+          <% end %>
+        </li>
+
+        <li>
+          <span class="token">2</span>
+          <h3>Invite your friends with our Ambassador Tools</h3>
+          <p>In your Profile, we've developed tools for sending invitations by e-mail or by sharing with your friends, family, and followers on sites like Facebook and Twitter.</p>
+          <p>You can use the invitations we've written for you, or write your own messages.</p>
+          <div class="preview"><img src="/images/ambassador_details_2.png" /></div>
+        </li>
+
+        <li>
+          <span class="token">3</span>
+          <h3>Earn Points from referrals that subscribe</h3>
+          <p>New subscribers that credit you by following your invitation or referencing your Ambassador ID will receive <span>2 week free trial</span> when they subscribe to one of our prepaid Unlimited Membership plans.</p>
+          <p>You'll receive one point for each referral that becomes a paid subscriber.</p>
+          <div class="preview"><img src="/images/ambassador_details_3.png" /></div>
+        </li>
+
+        <li class="last">
+          <span class="token">4</span>
+          <h3>Use your points for free Yoga Today</h3>
+          <p>The Ambassador Tools in your Profile also has a place for you to redeem the points you've earned. The My Rewards tab shows your available points and let's you use any or all of them to add free months of Yoga Today to your account.</p>
+          <p>1 point = 1 free month Unlimited Membership</p>
+          <div class="preview"><img src="/images/ambassador_details_4.png" /></div>
+        </li>
+      </ul>
+      <div class="join">
+        <%= link_to image_tag("/images/ambassador_details_button_join-now.png"), sign_up_path, :class => 'join_now' %></input>
+      </div>
+      <%= link_to 'Ambassador Rewards Program - Terms &amp; Conditions', ambassador_terms_and_conditions_path, :id => 'ambassador_terms_conditions' %>
+    </div>
+  </div>
+</div>
