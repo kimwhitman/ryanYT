@@ -12,9 +12,9 @@ set :default_stage, "staging"
 
 set :rake, "/opt/local/bin/rake"
 set :repository, "git@github.com:kimwhitman/ryanYT.git"
-set :repository, "git@github.com:planetargon/yogatoday.git"
+#set :repository, "git@github.com:planetargon/yogatoday.git"
 set :scm, :git
-set :branch, "ITER-002" # or whatever branch/tag/SHA1
+#set :branch, "ITER-002" # or whatever branch/tag/SHA1
 
 set :branch do
   Capistrano::CLI.ui.ask "Which remote branch would you like to deploy to #{stage.to_s.upcase}: "
